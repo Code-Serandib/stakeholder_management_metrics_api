@@ -31,3 +31,27 @@ public function buildStakeholderInfluenceMatrix(Stakeholder[] stakeholders) retu
 public function calculateInfluence(float Ci, float Ij) returns float {
     return Ci * Ij;
 }
+
+
+// Enhanced SIM output with detailed breakdown
+public function buildStakeholderInfluenceMatrixDetailed(Stakeholder[] stakeholders) returns json {
+    float[][] SIM = buildStakeholderInfluenceMatrix(stakeholders);
+    json[] detailedSIM = [];
+
+    foreach int i in 0 ..< stakeholders.length() {
+        map<json> row = {};
+        foreach int j in 0 ..< stakeholders.length() {
+            row[stakeholders[j].name] = {
+                "influence_score": SIM[i][j],
+                "description": string `Influence of '${stakeholders[i].name}' on '${stakeholders[j].name}': ${SIM[i][j]}`
+            };
+        }
+        detailedSIM.push(row);
+    }
+
+    json response = {
+        "Stakeholder Influence Matrix (SIM)": detailedSIM,
+        "analysis": "The matrix shows each stakeholder's influence on others. Higher values indicate stronger influence."
+    };
+    return response;
+}

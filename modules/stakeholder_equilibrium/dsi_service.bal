@@ -19,3 +19,23 @@ public function calculateDynamicStakeholderImpact(Stakeholder[] stakeholders, fl
     }
     return DSI;
 }
+
+// Enhanced DSI output with detailed analysis
+public function calculateDynamicStakeholderImpactDetailed(Stakeholder[] stakeholders, float[] deltaBehavior) returns json {
+    float[] DSI = calculateDynamicStakeholderImpact(stakeholders, deltaBehavior);
+    json[] detailedDSI = [];
+    
+    foreach int i in 0 ..< stakeholders.length() {
+        detailedDSI.push({
+            "stakeholder": stakeholders[i].name,
+            "impact_score": DSI[i],
+            "description": string `Impact of '${stakeholders[i].name}' based on behavior change: ${DSI[i]}`
+        });
+    }
+
+    json response = {
+        "Dynamic Stakeholder Impact (DSI)": detailedDSI,
+        "analysis": "This metric shows how changes in stakeholder behavior affect their overall impact on the network."
+    };
+    return response;
+}

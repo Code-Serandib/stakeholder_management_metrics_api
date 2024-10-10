@@ -288,16 +288,18 @@ service /stakeholder\-analytics on new http:Listener(9090) {
     resource function post calculate_sim(http:Caller caller, http:Request req) returns error? {
         json payload = check req.getJsonPayload();
 
-         // Ensure the 'stakeholders' field is present and is of type json
+        // Ensure the 'stakeholders' field is present and is of type json
         json stakeholdersJson = check payload.stakeholders;
-        
+
         // Parse the 'stakeholders' field in the JSON payload
         stakeholder_equilibrium:Stakeholder[] stakeholders = check jsondata:parseAsType(stakeholdersJson);
 
-        float[][] SIM = stakeholder_equilibrium:buildStakeholderInfluenceMatrix(stakeholders);
+        // float[][] SIM = stakeholder_equilibrium:buildStakeholderInfluenceMatrix(stakeholders);
+        json detailedSIM = stakeholder_equilibrium:buildStakeholderInfluenceMatrixDetailed(stakeholders);
 
-        json response = { "Stakeholder Influence Matrix (SIM)": SIM };
-        check caller->respond(response);
+        // json response = { "Stakeholder Influence Matrix (SIM)": SIM };
+        // check caller->respond(response);
+        check caller->respond(detailedSIM);
     }
 
     // Calculate DSI
@@ -306,13 +308,17 @@ service /stakeholder\-analytics on new http:Listener(9090) {
         stakeholder_equilibrium:Stakeholder[] stakeholders = check jsondata:parseAsType(check payload.stakeholders);
         float[] deltaBehavior = check jsondata:parseAsType(check payload.deltaBehavior);
 
-        float[] DSI = stakeholder_equilibrium:calculateDynamicStakeholderImpact(stakeholders, deltaBehavior);
+        // float[] DSI = stakeholder_equilibrium:calculateDynamicStakeholderImpact(stakeholders, deltaBehavior);
 
-        json response = {
-            "Dynamic Stakeholder Impact (DSI)": DSI
-        };
+        // json response = {
+        //     "Dynamic Stakeholder Impact (DSI)": DSI
+        // };
 
-        check caller->respond(response);
+        // check caller->respond(response);
+
+        json detailedDSI = stakeholder_equilibrium:calculateDynamicStakeholderImpactDetailed(stakeholders, deltaBehavior);
+
+        check caller->respond(detailedDSI);
     }
 
     // Calculate SNS
@@ -321,33 +327,40 @@ service /stakeholder\-analytics on new http:Listener(9090) {
         stakeholder_equilibrium:Stakeholder[] stakeholders = check jsondata:parseAsType(check payload.stakeholders);
         float[] deltaBehavior = check jsondata:parseAsType(check payload.deltaBehavior);
 
-        float SNS = stakeholder_equilibrium:calculateStakeholderNetworkStability(stakeholders, deltaBehavior);
+        // float SNS = stakeholder_equilibrium:calculateStakeholderNetworkStability(stakeholders, deltaBehavior);
 
-        json response = {
-            "Stakeholder Network Stability (SNS)": SNS
-        };
+        // json response = {
+        //     "Stakeholder Network Stability (SNS)": SNS
+        // };
 
-        check caller->respond(response);
+        // check caller->respond(response);
+
+        json detailedSNS = stakeholder_equilibrium:calculateStakeholderNetworkStabilityDetailed(stakeholders, deltaBehavior);
+
+        check caller->respond(detailedSNS);
     }
 
     // Calculate SIS
     resource function post calculate_sis(http:Caller caller, http:Request req) returns error? {
         json payload = check req.getJsonPayload();
-        
-         // Ensure the 'stakeholders' field is present and is of type json
+
+        // Ensure the 'stakeholders' field is present and is of type json
         json stakeholdersJson = check payload.stakeholders;
 
-        
         // Parse the 'stakeholders' field in the JSON payload
         stakeholder_equilibrium:Stakeholder[] stakeholders = check jsondata:parseAsType(stakeholdersJson);
 
-        float[] SIS = stakeholder_equilibrium:calculateSystemicInfluenceScore(stakeholders);
+        // float[] SIS = stakeholder_equilibrium:calculateSystemicInfluenceScore(stakeholders);
 
-        json response = {
-            "Systemic Influence Score (SIS)": SIS
-        };
+        // json response = {
+        //     "Systemic Influence Score (SIS)": SIS
+        // };
 
-        check caller->respond(response);//end
+        // check caller->respond(response); //end
+
+        json detailedSIS = stakeholder_equilibrium:calculateSystemicInfluenceScoreDetailed(stakeholders);
+
+        check caller->respond(detailedSIS);
     }
     //stakeholder-equilibrium functions end
     //*****************************************//

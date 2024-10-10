@@ -25,3 +25,14 @@ public function calculateStakeholderNetworkStability(Stakeholder[] stakeholders,
 function abs(float value) returns float {
     return value < 0.0 ? -value : value;
 }
+
+
+// Enhanced SNS output with detailed analysis
+public function calculateStakeholderNetworkStabilityDetailed(Stakeholder[] stakeholders, float[] deltaBehavior) returns json {
+    float SNS = calculateStakeholderNetworkStability(stakeholders, deltaBehavior);
+
+    json response = {
+        "Stakeholder Network Stability (SNS)": SNS
+    };
+    return response;
+}

@@ -30,3 +30,24 @@ public function calculateSystemicInfluenceScore(Stakeholder[] stakeholders) retu
 
     return SIS;
 }
+
+
+// Enhanced SIS output with detailed analysis
+public function calculateSystemicInfluenceScoreDetailed(Stakeholder[] stakeholders) returns json {
+    float[] SIS = calculateSystemicInfluenceScore(stakeholders);
+    json[] detailedSIS = [];
+
+    foreach int i in 0 ..< stakeholders.length() {
+        detailedSIS.push({
+            "stakeholder": stakeholders[i].name,
+            "systemic_influence_score": SIS[i],
+            "description": string `Total systemic influence of '${stakeholders[i].name}': ${SIS[i]} (Direct + Indirect)`
+        });
+    }
+
+    json response = {
+        "Systemic Influence Score (SIS)": detailedSIS,
+        "analysis": "This score reflects both direct and indirect influence of stakeholders within the network, with higher scores indicating more systemic influence."
+    };
+    return response;
+}
